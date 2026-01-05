@@ -6,21 +6,24 @@ int eliminate_recursive(Matrix *mat, Matrix *b, int krok) {
     return 0;
   }
   /* sprawdzenie czy maciez jest osobliwa*/
-  int czy_osobliwa = 0;
+  int piwot = krok;
+  double maxik = fabs(mat->data[krok][krok]);
   for (int ir = krok; ir < mat->r; ir++) {
-    if (mat->data[ir][krok] != 0) {
-      czy_osobliwa = 1;
-      double *buf = mat->data[ir];
-      mat->data[ir] = mat->data[krok];
-      mat->data[krok] = buf;
-      buf = b->data[ir];
-      b->data[ir] = b->data[krok];
-      b->data[krok] = buf;
-      break;
+    if (maxik < fabs(mat->data[ir][krok])) {
+      piwot = ir;
+      maxik = fabs(mat->data[ir][krok]);
     }
   }
-  if (czy_osobliwa == 0)
+  if (maxik == 0) {
     return 1;
+  } else {
+    double *buf = mat->data[piwot];
+    mat->data[piwot] = mat->data[krok];
+    mat->data[krok] = buf;
+    buf = b->data[piwot];
+    b->data[piwot] = b->data[krok];
+    b->data[krok] = buf;
+  }
 
   for (int i = krok + 1; i < mat->r; i++) {
     double li = mat->data[i][krok] / mat->data[krok][krok];
