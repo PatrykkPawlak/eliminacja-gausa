@@ -1,27 +1,28 @@
 #include "gauss.h"
 #include "mat_io.h"
+#include <math.h>
 
 int eliminate_recursive(Matrix *mat, Matrix *b, int krok) {
   if (krok == mat->r) {
     return 0;
   }
   /* sprawdzenie czy maciez jest osobliwa*/
-  int piwot = krok;
-  double maxik = fabs(mat->data[krok][krok]);
+  int max_in = krok;
+  double max_val = fabs(mat->data[krok][krok]);
   for (int ir = krok; ir < mat->r; ir++) {
-    if (maxik < fabs(mat->data[ir][krok])) {
-      piwot = ir;
-      maxik = fabs(mat->data[ir][krok]);
+    if (max_val < fabs(mat->data[ir][krok])) {
+      max_in = ir;
+      max_val = fabs(mat->data[ir][krok]);
     }
   }
-  if (maxik == 0) {
+  if (max_val == 0) {
     return 1;
   } else {
-    double *buf = mat->data[piwot];
-    mat->data[piwot] = mat->data[krok];
+    double *buf = mat->data[max_in];
+    mat->data[max_in] = mat->data[krok];
     mat->data[krok] = buf;
-    buf = b->data[piwot];
-    b->data[piwot] = b->data[krok];
+    buf = b->data[max_in];
+    b->data[max_in] = b->data[krok];
     b->data[krok] = buf;
   }
 
